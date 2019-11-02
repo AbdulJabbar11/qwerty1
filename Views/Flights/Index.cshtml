@@ -1,0 +1,95 @@
+﻿@model IEnumerable<qwerty1.Models.Flight>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.AirlineId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Source)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Destination)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DepartureDateTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ArrivalDateTime)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AirlineId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Source)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Destination)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DepartureDateTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ArrivalDateTime)
+                </td>
+                <td>
+                    <a href="/flights/edit?id=@item.Id" class="btn btn-sm btn-warning"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</a> |
+                    <a href="/flights/details?id=@item.Id" class="btn btn-sm btn-success"><i class="fa fa-eye" aria-hidden="true"></i>Details</a> |
+                    @if (Context.Session.GetString("Role") == "Admin")
+                    { 
+                    <a href="#" data-flightsid="@item.Id" class="btn btn-sm btn-danger d"><i class="fa fa-trash" aria-hidden="true"></i>Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@section Scripts{
+
+    <script>
+
+        $(function () {
+            $('.d').click(function () {
+                var DeleteButton = $(this);
+                var FlightId = DeleteButton.data("flightsid");
+                DeleteButton.text("Please wait ...");
+
+                $.ajax({
+
+                    url:'/flights/DeleteFlight',
+                    type: 'POST',
+                    data: {
+                        id: FlightId
+                    },
+                    success: function (response) {
+                        if (response == "1") {
+                            DeleteButton.parent().parent().fadeOut(1000);
+                        }
+                    }
+                });
+            });
+
+        });
+     </script>
+}
+
+

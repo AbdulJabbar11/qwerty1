@@ -1,0 +1,158 @@
+﻿@model IEnumerable<qwerty1.Models.Airline>
+
+@{
+    ViewData["Title"] = "AllAirline";
+}
+
+<h1>AllAirline - @Model.Count()</h1>
+
+<p>
+    <a href="/airline/addnewairline" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i>Create New</a>
+</p>
+
+<br/>
+
+<form action="/airline/allairline">
+
+    <input type="text" name="f" />
+    <input type="submit" name="search" />
+</form>
+
+
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Country)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShortCode)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @{ var Class = "table-warning"; }
+
+        @foreach (var item in Model)
+        {
+
+            {
+                if (item.Status == "ACTIVE")
+                {
+                    Class = "table-success";
+                }
+                else if (item.Status == "INACTIVE")
+                {
+                    Class = "table-danger";
+                }
+                else
+                {
+                    Class = "table-warning";
+                }
+
+            }
+
+
+
+
+            <tr>
+                <td class="@Class">
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td class="@Class">
+                    @Html.DisplayFor(modelItem => item.Country)
+                </td>
+                <td class="@Class">
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td class="@Class">
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td class="@Class">
+                    @Html.DisplayFor(modelItem => item.ShortCode)
+                </td>
+                <td>
+                    <a href="/airline/editairline?id=@item.Id" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i>Edit</a> |
+                    <a href="/airline/viewairlinedetail?id=@item.Id" class="btn btn-sm btn-success"><i class="fa fa-eye" aria-hidden="true"></i> View</a>
+                    <a href="#" data-airlineid="@item.Id" class="btn btn-sm btn-danger d"><i class="fa fa-trash" aria-hidden="true"></i>Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@section Scripts{
+
+    <script>
+
+        $(function () {
+
+
+            $('.d').click(function () {
+                var DeleteButton = $(this);
+                var AirlineId = DeleteButton.data("airlineid");
+                DeleteButton.text("Please wait ...");
+
+
+               
+                $.ajax({
+
+                    url: '/airline/DeleteAirline',
+                    type: 'POST',
+                    data: {
+                        ID: AirlineId
+                    },
+                    success: function (response) {
+                        if (response == "1") {
+                            DeleteButton.parent().parent().fadeOut(2000);
+
+
+
+                        }
+                    }
+
+
+
+
+                });
+
+
+            });
+
+
+
+
+        });
+
+    </script>
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
